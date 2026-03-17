@@ -93,3 +93,11 @@ Ability to add a new health record.
 Simple list of health records.
 Dynamic care tips text screen.
 Ability to add new Care Instructions.
+
+### **Team Members**
+Najnin
+Arad
+Shaheer
+Niaj
+Brian
+
