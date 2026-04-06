@@ -7,23 +7,19 @@ import java.util.List;
 
 public class PetViewModel extends AndroidViewModel {
 
-    private AppRepository repository;
-    private LiveData<List<Pet>> allPets;
+    private final AppRepository repository;
+    private final LiveData<List<Pet>> allPets;
 
     public PetViewModel(Application application) {
         super(application);
         repository = new AppRepository(application);
         allPets = repository.getAllPets();
-        
-        // Populate the database with initial data
-        repository.populateInitialData();
+        // populateInitialData() removed — seed data is now in AppDatabase.seedCallback
+        // and only runs once, on the very first time the database is created.
     }
 
-    public LiveData<List<Pet>> getAllPets() {
-        return allPets;
-    }
-
-    public void insert(Pet pet) {
-        repository.insert(pet);
-    }
+    public LiveData<List<Pet>> getAllPets() { return allPets; }
+    public void insert(Pet pet) { repository.insert(pet); }
+    public void update(Pet pet) { repository.update(pet); }
+    public void delete(Pet pet) { repository.delete(pet); }
 }

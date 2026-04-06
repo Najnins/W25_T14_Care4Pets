@@ -7,8 +7,8 @@ import java.util.List;
 
 public class ReminderViewModel extends AndroidViewModel {
 
-    private AppRepository repository;
-    private LiveData<List<Reminder>> allReminders;
+    private final AppRepository repository;
+    private final LiveData<List<Reminder>> allReminders;
 
     public ReminderViewModel(Application application) {
         super(application);
@@ -16,15 +16,8 @@ public class ReminderViewModel extends AndroidViewModel {
         allReminders = repository.getAllReminders();
     }
 
-    public LiveData<List<Reminder>> getAllReminders() {
-        return allReminders;
-    }
-
-    public void insert(Reminder reminder) {
-        repository.insert(reminder);
-    }
-
-    public void update(Reminder reminder) {
-        repository.update(reminder);
-    }
+    public LiveData<List<Reminder>> getAllReminders() { return allReminders; }
+    public void insert(Reminder reminder) { repository.insert(reminder); }
+    public void update(Reminder reminder) { repository.update(reminder); }
+    public void delete(Reminder reminder) { repository.delete(reminder); } // was missing
 }
