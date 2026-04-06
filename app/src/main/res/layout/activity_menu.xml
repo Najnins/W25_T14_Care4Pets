@@ -136,7 +136,7 @@
                 android:id="@+id/cardReminders"
                 android:layout_width="0dp"
                 android:layout_height="140dp"
-                android.layout_columnWeight="1"
+                android:layout_columnWeight="1"
                 cardview:cardCornerRadius="24dp"
                 cardview:cardElevation="6dp"
                 android:backgroundTint="@color/pastel_yellow">
