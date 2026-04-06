@@ -11,15 +11,30 @@
         android:id="@+id/ivPetImage"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/dog_placeholder" /> <!-- Use your placeholder image -->
+        android:src="@drawable/dog_placeholder" />
 
-    <TextView
-        android:id="@+id/tvPetName"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:text="Pet Name" />
+        android:orientation="vertical"
+        android:layout_marginStart="16dp">
+
+        <TextView
+            android:id="@+id/tvPetName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:text="Pet Name" />
+
+        <TextView
+            android:id="@+id/tvPetSpecies"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:text="Species, Age" />
+
+    </LinearLayout>
+
 </LinearLayout>
-    
