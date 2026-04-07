@@ -101,8 +101,6 @@ public class PetProfileActivity extends AppCompatActivity {
 
         btnCareInstructions.setOnClickListener(v -> {
             Intent intent = new Intent(this, CareInstructionsActivity.class);
-            intent.putExtra("pet_id", pet.getId());
-            intent.putExtra("pet_name", pet.getName());
             startActivity(intent);
         });
     }

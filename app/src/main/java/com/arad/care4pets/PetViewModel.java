@@ -8,18 +8,22 @@ import java.util.List;
 public class PetViewModel extends AndroidViewModel {
 
     private final AppRepository repository;
-    private final LiveData<List<Pet>> allPets;
+    private final LiveData<List<Pet>> petsForUser;
+    private final int userId;
 
     public PetViewModel(Application application) {
         super(application);
         repository = new AppRepository(application);
-        allPets = repository.getAllPets();
-        // populateInitialData() removed — seed data is now in AppDatabase.seedCallback
-        // and only runs once, on the very first time the database is created.
+        userId = UserSessionManager.getUserId(application);
+        petsForUser = repository.getPetsForUser(userId);
+
     }
 
-    public LiveData<List<Pet>> getAllPets() { return allPets; }
-    public void insert(Pet pet) { repository.insert(pet); }
+    public LiveData<List<Pet>> getAllPets() { return petsForUser; }
+    public void insert(Pet pet){
+        pet.setUserId(userId);
+        repository.insert(pet);
+    }
     public void update(Pet pet) { repository.update(pet); }
     public void delete(Pet pet) { repository.delete(pet); }
 }

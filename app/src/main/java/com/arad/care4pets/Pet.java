@@ -17,6 +17,7 @@ public class Pet implements Parcelable {
     private String notes;
     private int weight;
     private int health;
+    private int userId;
 
     public Pet() {}
 
@@ -28,6 +29,18 @@ public class Pet implements Parcelable {
         this.notes = notes;
         this.weight = weight;
         this.health = health;
+        this.userId = 0;
+    }
+
+    @Ignore
+    public Pet(String name, String species, int age, String notes, int weight, int health, int userId){
+        this.name = name;
+        this.species = species;
+        this.age = age;
+        this.notes = notes;
+        this.weight = weight;
+        this.health = health;
+        this.userId = userId;
     }
 
     // Parcelable implementation...
@@ -68,6 +81,7 @@ public class Pet implements Parcelable {
         dest.writeString(notes);
         dest.writeInt(weight);
         dest.writeInt(health);
+        dest.writeInt(userId); // links the pet to the user that owns it
     }
 
     // Getters
@@ -78,6 +92,7 @@ public class Pet implements Parcelable {
     public String getNotes() { return notes; }
     public int getWeight() { return weight; }
     public int getHealth() { return health; }
+    public int getUserId(){return userId;}
 
     // Setters
     public void setId(int id) { this.id = id; }
@@ -87,4 +102,5 @@ public class Pet implements Parcelable {
     public void setNotes(String notes) { this.notes = notes; }
     public void setWeight(int weight) { this.weight = weight; }
     public void setHealth(int health) { this.health = health; }
+    public void setUserId(int userId){this.userId = userId;}
 }

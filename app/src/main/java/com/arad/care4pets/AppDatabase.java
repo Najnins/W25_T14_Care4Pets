@@ -7,13 +7,12 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Database(
         entities = {Pet.class, Reminder.class, HealthRecord.class, CareInstruction.class, User.class},
-        version = 5,
+        version = 7,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -27,34 +26,30 @@ public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase INSTANCE;
     static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(4);
 
-    //  Migration 2 → 3
+    // ── Migration 2 → 3 ──────────────────────────────────────────────────────
     static final Migration MIGRATION_2_3 = new Migration(2, 3) {
         @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE reminders ADD COLUMN petId INTEGER NOT NULL DEFAULT 0");
-            database.execSQL("ALTER TABLE reminders ADD COLUMN notificationId INTEGER NOT NULL DEFAULT 0");
-            database.execSQL("ALTER TABLE health_records ADD COLUMN petId INTEGER NOT NULL DEFAULT 0");
-            database.execSQL("ALTER TABLE health_records ADD COLUMN dateRecorded TEXT");
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE reminders ADD COLUMN petId INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE reminders ADD COLUMN notificationId INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE health_records ADD COLUMN petId INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE health_records ADD COLUMN dateRecorded TEXT");
         }
     };
 
-    //  Migration 3 → 4
+    // ── Migration 3 → 4 ──────────────────────────────────────────────────────
     static final Migration MIGRATION_3_4 = new Migration(3, 4) {
         @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE care_instructions ADD COLUMN petId INTEGER NOT NULL DEFAULT 0");
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE care_instructions ADD COLUMN petId INTEGER NOT NULL DEFAULT 0");
         }
     };
 
-    //  Migration 4 → 5
-    // Creates the users table for existing installs. New installs get it via
-    // the CREATE TABLE in onCreate automatically.
+    // ── Migration 4 → 5 ──────────────────────────────────────────────────────
     static final Migration MIGRATION_4_5 = new Migration(4, 5) {
         @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            // email must be TEXT (nullable) to match the User entity
-            // NOT NULL was wrong — Room generates it as nullable
-            database.execSQL(
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL(
                     "CREATE TABLE IF NOT EXISTS users (" +
                             "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                             "email TEXT, " +
@@ -62,48 +57,43 @@ public abstract class AppDatabase extends RoomDatabase {
                             "name TEXT" +
                             ")"
             );
-            // Room requires this index because of @Index(value = "email", unique = true)
-            // in the User entity — without it the migration validation fails
-            database.execSQL(
+            db.execSQL(
                     "CREATE UNIQUE INDEX IF NOT EXISTS index_users_email ON users(email)"
             );
         }
     };
 
-    // Seed callback  fires only on first-ever database creation
-    private static final RoomDatabase.Callback seedCallback = new RoomDatabase.Callback() {
+    // ── Migration 5 → 6 ──────────────────────────────────────────────────────
+    // Adds userId to pets and reminders so each user sees only their own data.
+    // Existing rows default to userId = 0 (no owner — they were seed/test data).
+    static final Migration MIGRATION_5_6 = new Migration(5, 6) {
         @Override
-        public void onCreate(@NonNull SupportSQLiteDatabase db) {
-            super.onCreate(db);
-            databaseWriteExecutor.execute(() -> {
-                AppDatabase database = INSTANCE;
-                if (database == null) return;
-
-                PetDao petDao               = database.petDao();
-                ReminderDao reminderDao     = database.reminderDao();
-                HealthRecordDao healthDao   = database.healthRecordDao();
-                CareInstructionsDao careDao = database.careInstructionsDao();
-
-                petDao.insert(new Pet("Luna", "Dog", 3, "Allergic to chicken", 25, 98));
-                petDao.insert(new Pet("Milo", "Cat", 2, "Needs eye drops", 12, 95));
-
-                reminderDao.insert(new Reminder("Luna – Vet visit", "2024-12-15", null, "Vet", false, "Annual checkup"));
-                reminderDao.insert(new Reminder("Milo – Vaccination", "2025-01-05", null, "Vaccine", false, "Rabies booster"));
-
-                healthDao.insert(new HealthRecord("Rabies Vaccine",  "Given: Nov 10, 2025\nNext: Nov 10, 2026", "Vaccinations"));
-                healthDao.insert(new HealthRecord("DHPP Vaccine",    "Given: Oct 15, 2025\nNext: Oct 15, 2026", "Vaccinations"));
-                healthDao.insert(new HealthRecord("Heartgard Plus",  "1 tablet • Monthly",                      "Medications"));
-                healthDao.insert(new HealthRecord("Bravecto",        "500mg • Every 12 weeks",                  "Medications"));
-                healthDao.insert(new HealthRecord("Annual Checkup",  "Overall health is excellent.",             "Health Notes"));
-                healthDao.insert(new HealthRecord("Skin Allergy",    "Prescribed medication for skin allergies.","Health Notes"));
-
-                careDao.insert(new CareInstruction("Feed twice daily"));
-                careDao.insert(new CareInstruction("Walk for 30 minutes"));
-            });
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE pets ADD COLUMN userId INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE reminders ADD COLUMN userId INTEGER NOT NULL DEFAULT 0");
         }
     };
 
-    // Singleton
+    // Migration 6 - 7
+    static final Migration MIGRATION_6_7 = new Migration(6,7) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE care_instructions ADD COLUMN userId INTEGER NOT NULL DEFAULT 0");
+        }
+    };
+
+    // ── Seed callback ─────────────────────────────────────────────────────────
+    // Seed data removed — we have no userId to attach to seed records at
+    // database creation time (no user is logged in yet).
+    // Each user starts with an empty pet list and empty reminder list.
+    private static final RoomDatabase.Callback seedCallback = new RoomDatabase.Callback() {
+        @Override
+        public void onCreate(@NonNull SupportSQLiteDatabase db) {
+            // intentionally empty
+        }
+    };
+
+    // ── Singleton ─────────────────────────────────────────────────────────────
     public static AppDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
@@ -113,7 +103,13 @@ public abstract class AppDatabase extends RoomDatabase {
                                     AppDatabase.class,
                                     "care4pets_database"
                             )
-                            .addMigrations(MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                            .addMigrations(
+                                    MIGRATION_2_3,
+                                    MIGRATION_3_4,
+                                    MIGRATION_4_5,
+                                    MIGRATION_5_6,
+                                    MIGRATION_6_7
+                            )
                             .addCallback(seedCallback)
                             .build();
                 }

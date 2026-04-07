@@ -14,10 +14,7 @@ public class AppRepository {
     private final CareInstructionsDao careInstructionsDao;
     private final UserDao userDao;
 
-    private final LiveData<List<Pet>> allPets;
-    private final LiveData<List<Reminder>> allReminders;
     private final LiveData<List<HealthRecord>> allHealthRecords;
-    private final LiveData<List<CareInstruction>> allCareInstructions;
 
     public AppRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
@@ -26,19 +23,15 @@ public class AppRepository {
         healthRecordDao = db.healthRecordDao();
         careInstructionsDao = db.careInstructionsDao();
         userDao = db.userDao();
-        allPets = petDao.getAllPets();
-        allReminders = reminderDao.getAllReminders();
         allHealthRecords = healthRecordDao.getAllHealthRecords();
-        allCareInstructions = careInstructionsDao.getAllInstructions();
     }
 
     // User
 
-    public boolean registerUser(String email, String plainPassword, String name) {
+    public long registerUser(String email, String plainPassword, String name) {
         String hash = PasswordUtils.hash(plainPassword);
         User user = new User(email, hash, name);
-        long result = userDao.insert(user);
-        return result != -1; // -1 means the email already existed (IGNORE strategy)
+        return userDao.insert(user);
     }
 
     /**
@@ -53,14 +46,18 @@ public class AppRepository {
     }
 
     // Pet
-    public LiveData<List<Pet>> getAllPets() { return allPets; }
+    public LiveData<List<Pet>> getPetsForUser(int userId){
+        return petDao.getPetsForUser(userId);
+    }
     public void insert(Pet pet) { AppDatabase.databaseWriteExecutor.execute(() -> petDao.insert(pet)); }
     public void update(Pet pet) { AppDatabase.databaseWriteExecutor.execute(() -> petDao.update(pet)); }
     public void delete(Pet pet) { AppDatabase.databaseWriteExecutor.execute(() -> petDao.delete(pet)); }
 
     // Reminder
-    public LiveData<List<Reminder>> getAllReminders() { return allReminders; }
 
+    public LiveData<List<Reminder>> getRemindersForUser(int userId){
+        return  reminderDao.getRemindersForUser(userId);
+    }
     public LiveData<List<Reminder>> getRemindersForPet(int petId) {
         return reminderDao.getRemindersForPet(petId);
     }
@@ -97,10 +94,8 @@ public class AppRepository {
     public void delete(HealthRecord h) { AppDatabase.databaseWriteExecutor.execute(() -> healthRecordDao.delete(h)); }
 
     // CareInstruction
-    public LiveData<List<CareInstruction>> getAllCareInstructions() { return allCareInstructions; }
-
-    public LiveData<List<CareInstruction>> getInstructionsForPet(int petId) {
-        return careInstructionsDao.getInstructionsForPet(petId);
+    public LiveData<List<CareInstruction>> getInstructionsForUser(int userId) {
+        return careInstructionsDao.getInstructionsForUser(userId);
     }
 
     public void insert(CareInstruction i) { AppDatabase.databaseWriteExecutor.execute(() -> careInstructionsDao.insert(i)); }
