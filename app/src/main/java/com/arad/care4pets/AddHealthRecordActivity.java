@@ -9,6 +9,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class AddHealthRecordActivity extends AppCompatActivity {
 
     private HealthRecordViewModel healthRecordViewModel;
@@ -24,12 +28,12 @@ public class AddHealthRecordActivity extends AppCompatActivity {
 
         healthRecordViewModel = new ViewModelProvider(this).get(HealthRecordViewModel.class);
 
-        EditText etRecordTitle       = findViewById(R.id.etRecordTitle);
+        EditText etRecordTitle = findViewById(R.id.etRecordTitle);
         EditText etRecordDescription = findViewById(R.id.etRecordDescription);
-        Button btnSave               = findViewById(R.id.btn_save_health_record);
+        Button btnSave = findViewById(R.id.btn_save_health_record);
 
         btnSave.setOnClickListener(v -> {
-            String title       = etRecordTitle.getText() != null
+            String title = etRecordTitle.getText() != null
                     ? etRecordTitle.getText().toString().trim() : "";
             String description = etRecordDescription.getText() != null
                     ? etRecordDescription.getText().toString().trim() : "";
@@ -39,8 +43,9 @@ public class AddHealthRecordActivity extends AppCompatActivity {
                 return;
             }
 
+            String today = new SimpleDateFormat("yyyy-MM-dd" , Locale.CANADA).format(new Date());
             // petId links this record to the correct pet
-            HealthRecord record = new HealthRecord(title, description, "Health Notes", petId, null);
+            HealthRecord record = new HealthRecord(title, description, "Health Notes", petId, today);
             healthRecordViewModel.insert(record);
 
             Toast.makeText(this, R.string.record_added, Toast.LENGTH_SHORT).show();
