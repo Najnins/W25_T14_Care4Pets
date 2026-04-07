@@ -22,13 +22,13 @@ public class LoginActivity extends AppCompatActivity {
 
         repository = new AppRepository(getApplication());
 
-        TextInputEditText etEmail    = findViewById(R.id.etEmail);
+        TextInputEditText etEmail = findViewById(R.id.etEmail);
         TextInputEditText etPassword = findViewById(R.id.etPassword);
-        Button btnLogin              = findViewById(R.id.btnLogin);
-        Button btnCreateAccount      = findViewById(R.id.btnCreateAccount);
+        Button btnLogin = findViewById(R.id.btnLogin);
+        Button btnCreateAccount = findViewById(R.id.btnCreateAccount);
 
         btnLogin.setOnClickListener(v -> {
-            String email    = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
+            String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
             String password = etPassword.getText() != null ? etPassword.getText().toString() : "";
 
             if (email.isEmpty() || password.isEmpty()) {
@@ -41,13 +41,12 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            // ── Verify credentials against DB on background thread ────────────
             Executors.newSingleThreadExecutor().execute(() -> {
                 User user = repository.login(email, password);
 
                 runOnUiThread(() -> {
                     if (user == null) {
-                        // Don't tell the user WHICH field is wrong — security best practice
+                        // Don't tell the user WHICH field is wrong for security
                         Toast.makeText(this,
                                 "Incorrect email or password",
                                 Toast.LENGTH_SHORT).show();
@@ -55,9 +54,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     // Valid login — save session
-                    UserSessionManager.login(this, email);
-
-                    startActivity(new Intent(this, MenuActivity.class));
+                    UserSessionManager.login(this, user.getEmail(), user.getId());
+                    startActivity(new Intent(this, DashboardActivity.class));
                     finish();
                 });
             });

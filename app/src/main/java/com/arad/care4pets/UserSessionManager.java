@@ -14,10 +14,11 @@ public class UserSessionManager {
         return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
-    public static void login(Context context, String email) {
+    public static void login(Context context, String email, int userId) {
         getPrefs(context).edit()
                 .putBoolean(KEY_IS_LOGGED_IN, true)
                 .putString(KEY_USER_EMAIL, email)
+                .putInt(KEY_USER_ID, userId)
                 .apply();
     }
 
@@ -31,5 +32,9 @@ public class UserSessionManager {
 
     public static String getUserEmail(Context context) {
         return getPrefs(context).getString(KEY_USER_EMAIL, "");
+    }
+    // returns the current user's database ID or -1 if notlogged in
+    public static int getUserId(Context context){
+        return getPrefs(context).getInt(KEY_USER_ID, -1);
     }
 }

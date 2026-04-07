@@ -23,18 +23,18 @@ public class SignupActivity extends AppCompatActivity {
 
         repository = new AppRepository(getApplication());
 
-        TextInputEditText etName            = findViewById(R.id.etName);
-        TextInputEditText etEmail           = findViewById(R.id.etEmail);
-        TextInputEditText etPassword        = findViewById(R.id.etPassword);
+        TextInputEditText etName = findViewById(R.id.etName);
+        TextInputEditText etEmail = findViewById(R.id.etEmail);
+        TextInputEditText etPassword = findViewById(R.id.etPassword);
         TextInputEditText etConfirmPassword = findViewById(R.id.etConfirmPassword);
-        Button btnCreateAccount             = findViewById(R.id.btnCreateAccount);
-        TextView tvSignIn                   = findViewById(R.id.tvSignIn);
+        Button btnCreateAccount = findViewById(R.id.btnCreateAccount);
+        TextView tvSignIn = findViewById(R.id.tvSignIn);
 
         btnCreateAccount.setOnClickListener(v -> {
-            String name     = etName.getText() != null ? etName.getText().toString().trim() : "";
-            String email    = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
+            String name = etName.getText() != null ? etName.getText().toString().trim() : "";
+            String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
             String password = etPassword.getText() != null ? etPassword.getText().toString() : "";
-            String confirm  = etConfirmPassword.getText() != null ? etConfirmPassword.getText().toString() : "";
+            String confirm = etConfirmPassword.getText() != null ? etConfirmPassword.getText().toString() : "";
 
             // ── Validation ────────────────────────────────────────────────────
 
@@ -63,19 +63,17 @@ public class SignupActivity extends AppCompatActivity {
             // ── Save to database on background thread ─────────────────────────
             // registerUser() does a DB insert which must not run on the main thread
             Executors.newSingleThreadExecutor().execute(() -> {
-                boolean success = repository.registerUser(email, password, name);
+                long newUserId = repository.registerUser(email, password, name);
 
                 runOnUiThread(() -> {
-                    if (!success) {
+                    if (newUserId == -1) {
                         Toast.makeText(this,
                                 "An account with this email already exists",
                                 Toast.LENGTH_LONG).show();
                         return;
                     }
 
-                    // Save session so user stays logged in
-                    UserSessionManager.login(this, email);
-
+                    UserSessionManager.login(this, email, (int) newUserId);
                     startActivity(new Intent(this, MenuActivity.class));
                     finish();
                 });
