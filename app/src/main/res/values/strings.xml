@@ -63,6 +63,12 @@
     <string name="health">Health</string>
     <string name="records">Records</string>
     <string name="upcoming">Upcoming</string>
+    <string name="pets">Pets</string>
+    <string name="reminders">Reminders</string>
+    <string name="log_out">Log Out</string>
+    <string name="home_dashboard">Home Dashboard</string>
+    <string name="menu">Menu</string>
+    <string name="choose_where_to_go">Choose where to go</string>
     <plurals name="active_reminders">
         <item quantity="one">%d active reminder</item>
         <item quantity="other">%d active reminders</item>

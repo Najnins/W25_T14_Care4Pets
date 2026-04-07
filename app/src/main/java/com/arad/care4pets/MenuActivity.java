@@ -3,6 +3,7 @@ package com.arad.care4pets;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -19,6 +20,7 @@ public class MenuActivity extends AppCompatActivity {
         CardView cardReminders = findViewById(R.id.cardReminders);
         CardView cardHealth = findViewById(R.id.cardHealth);
         CardView cardCare = findViewById(R.id.cardCare);
+        CardView cardLogout = findViewById(R.id.cardLogout);
 
         // Set click listeners for each card
         cardDashboard.setOnClickListener(v -> {
@@ -39,6 +41,22 @@ public class MenuActivity extends AppCompatActivity {
 
         cardCare.setOnClickListener(v -> {
             startActivity(new Intent(MenuActivity.this, CareInstructionsActivity.class));
+        });
+
+        cardLogout.setOnClickListener(v -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("Log out")
+                    .setMessage("Are you sure you want to log out?")
+                    .setPositiveButton("Log Out", (dialog, which) ->{
+                        UserSessionManager.logout(this);
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
         });
     }
 }

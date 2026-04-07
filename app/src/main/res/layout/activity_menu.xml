@@ -15,12 +15,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:text="Menu"
+            android:text="@string/menu"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <TextView
-            android:text="Choose where to go"
+            android:text="@string/choose_where_to_go"
             android:textSize="14sp"
             android:layout_marginBottom="20dp"
             android:layout_width="wrap_content"
@@ -60,7 +60,7 @@
                         cardview:tint="@color/black" />
 
                     <TextView
-                        android:text="Home Dashboard"
+                        android:text="@string/home_dashboard"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:layout_marginTop="6dp"
@@ -95,7 +95,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Pets"
+                        android:text="@string/pets"
                         android:textStyle="bold" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -126,7 +126,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Health Records"
+                        android:text="@string/health_records"
                         android:textStyle="bold" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -157,7 +157,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Reminders"
+                        android:text="@string/reminders"
                         android:textStyle="bold" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -188,12 +188,44 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Care Instructions"
+                        android:text="@string/care_instructions"
                         android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardLogout"
+                android:layout_width="0dp"
+                android:layout_height="140dp"
+                android:layout_columnWeight="1"
+                cardview:cardCornerRadius="24dp"
+                cardview:cardElevation="6dp"
+                android:backgroundTint="#FFCDD2">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:src="@drawable/ic_logout"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        cardview:tint="@color/black" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/log_out"
+                        android:textStyle="bold" />
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
         </GridLayout>
+
+
 
     </LinearLayout>
 

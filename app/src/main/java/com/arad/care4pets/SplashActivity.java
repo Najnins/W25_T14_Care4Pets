@@ -15,9 +15,14 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-        Intent intent = new Intent(SplashActivity.this, OnboardingActivity.class);
-        startActivity(intent);
-        finish();
-    }, 1500);
+            if (UserSessionManager.isLoggedIn(this)) {
+                // Already logged in — skip onboarding and login entirely
+                startActivity(new Intent(this, MenuActivity.class));
+            } else {
+                // First launch or logged out — show onboarding
+                startActivity(new Intent(this, OnboardingActivity.class));
+            }
+            finish();
+        }, 1500);
     }
 }
