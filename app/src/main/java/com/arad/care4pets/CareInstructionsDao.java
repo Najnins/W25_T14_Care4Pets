@@ -16,9 +16,7 @@ public interface CareInstructionsDao {
     @Delete
     void delete(CareInstruction instruction);
 
-    @Query("SELECT * FROM care_instructions ORDER BY id ASC")
-    LiveData<List<CareInstruction>> getAllInstructions();
-
-    @Query("SELECT * FROM care_instructions WHERE petId = :petId ORDER BY id ASC")
-    LiveData<List<CareInstruction>> getInstructionsForPet(int petId);
+    // Only fetch instructions belonging to the logged-in user
+    @Query("SELECT * FROM care_instructions WHERE userId = :userId ORDER BY id ASC")
+    LiveData<List<CareInstruction>> getInstructionsForUser(int userId);
 }
