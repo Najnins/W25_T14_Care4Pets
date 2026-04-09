@@ -7,23 +7,28 @@ import java.util.List;
 
 public class PetViewModel extends AndroidViewModel {
 
-    private AppRepository repository;
-    private LiveData<List<Pet>> allPets;
+    private final AppRepository repository;
+    private final LiveData<List<Pet>> petsForUser;
+    private final int userId;
 
     public PetViewModel(Application application) {
         super(application);
         repository = new AppRepository(application);
-        allPets = repository.getAllPets();
-        
-        // Populate the database with initial data
-        repository.populateInitialData();
+        userId = UserSessionManager.getUserId(application);
+        petsForUser = repository.getPetsForUser(userId);
+
     }
 
-    public LiveData<List<Pet>> getAllPets() {
-        return allPets;
+    public LiveData<List<Pet>> getAllPets() { return petsForUser; }
+
+    public LiveData<Pet> getPetById(int petId){
+        return repository.getPetById(petId);
     }
 
-    public void insert(Pet pet) {
+    public void insert(Pet pet){
+        pet.setUserId(userId);
         repository.insert(pet);
     }
+    public void update(Pet pet) { repository.update(pet); }
+    public void delete(Pet pet) { repository.delete(pet); }
 }

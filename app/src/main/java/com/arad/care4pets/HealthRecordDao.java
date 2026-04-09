@@ -19,6 +19,14 @@ public interface HealthRecordDao {
     @Delete
     void delete(HealthRecord healthRecord);
 
-    @Query("SELECT * FROM health_records")
+    @Query("SELECT * FROM health_records ORDER BY id DESC")
     LiveData<List<HealthRecord>> getAllHealthRecords();
+
+    // Filter by pet
+    @Query("SELECT * FROM health_records WHERE petId = :petId ORDER BY id DESC")
+    LiveData<List<HealthRecord>> getHealthRecordsForPet(int petId);
+
+    // Filter by category"
+    @Query("SELECT * FROM health_records WHERE category = :category ORDER BY id DESC")
+    LiveData<List<HealthRecord>> getHealthRecordsByCategory(String category);
 }

@@ -44,7 +44,7 @@ public class DashboardActivity extends AppCompatActivity {
         adapter = new DashboardReminderAdapter(new ArrayList<>());
         rvUpcomingReminders.setAdapter(adapter);
 
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(v -> startActivity(new Intent(DashboardActivity.this, MenuActivity.class)));
         tvSeeAll.setOnClickListener(v -> startActivity(new Intent(DashboardActivity.this, RemindersActivity.class)));
 
         reminderViewModel = new ViewModelProvider(this).get(ReminderViewModel.class);

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,8 +23,7 @@ public class RemindersActivity extends AppCompatActivity implements ReminderAdap
     private TextView tvRemindersSubtitle;
     private MaterialButtonToggleGroup toggleButtonFilter;
     private ReminderViewModel reminderViewModel;
-
-    private List<Reminder> allReminders;
+    private List<Reminder> allReminders = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +36,8 @@ public class RemindersActivity extends AppCompatActivity implements ReminderAdap
         ExtendedFloatingActionButton fabAddReminder = findViewById(R.id.fabAddReminder);
 
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
-
         fabAddReminder.setOnClickListener(v ->
-                startActivity(new Intent(RemindersActivity.this, AddReminderActivity.class)));
+                startActivity(new Intent(this, AddReminderActivity.class)));
 
         adapter = new ReminderAdapter(new ArrayList<>(), this);
         rvReminders.setLayoutManager(new LinearLayoutManager(this));
@@ -46,32 +45,25 @@ public class RemindersActivity extends AppCompatActivity implements ReminderAdap
 
         reminderViewModel = new ViewModelProvider(this).get(ReminderViewModel.class);
         reminderViewModel.getAllReminders().observe(this, reminders -> {
-            allReminders = reminders;
+            allReminders = reminders != null ? reminders : new ArrayList<>();
             filterReminders(toggleButtonFilter.getCheckedButtonId());
             updateSubtitle();
         });
 
         toggleButtonFilter.check(R.id.btnAll);
         toggleButtonFilter.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (isChecked) {
-                filterReminders(checkedId);
-            }
+            if (isChecked) filterReminders(checkedId);
         });
-
-        updateSubtitle();
     }
 
     private void filterReminders(int checkedId) {
-        List<Reminder> filteredReminders = new ArrayList<>();
-        if (checkedId == R.id.btnAll) {
-            filteredReminders.addAll(allReminders);
-        } // Add filtering logic for other buttons here in the future
-        adapter.setReminders(filteredReminders);
+        adapter.setReminders(new ArrayList<>(allReminders));
     }
 
     private void updateSubtitle() {
         int count = allReminders.size();
-        tvRemindersSubtitle.setText(getResources().getQuantityString(R.plurals.active_reminders, count, count));
+        tvRemindersSubtitle.setText(
+                getResources().getQuantityString(R.plurals.active_reminders, count, count));
     }
 
     @Override
@@ -83,8 +75,15 @@ public class RemindersActivity extends AppCompatActivity implements ReminderAdap
 
     @Override
     public void onDeleteClick(Reminder reminder) {
-        // For Room, you should delete via the ViewModel
-        // reminderViewModel.delete(reminder);
-        Toast.makeText(this, reminder.getTitle() + " deleted", Toast.LENGTH_SHORT).show();
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Reminder")
+                .setMessage("Are you sure you want to delete \"" + reminder.getTitle() + "\"?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    ReminderScheduler.cancel(this, reminder);  // cancel the alarm
+                    reminderViewModel.delete(reminder);        // remove from database
+                    Toast.makeText(this, "Reminder deleted", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 }

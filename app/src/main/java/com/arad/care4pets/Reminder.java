@@ -17,6 +17,9 @@ public class Reminder implements Parcelable {
     private String type;
     private boolean isRepeating;
     private String notes;
+    private int petId;
+    private int notificationId;
+    private int userId;
 
     public Reminder() {}
 
@@ -28,6 +31,8 @@ public class Reminder implements Parcelable {
         this.type = type;
         this.isRepeating = isRepeating;
         this.notes = notes;
+        this.petId = 0;
+        this.userId = 0;
     }
 
     // Parcelable implementation...
@@ -40,18 +45,17 @@ public class Reminder implements Parcelable {
         type = in.readString();
         isRepeating = in.readByte() != 0;
         notes = in.readString();
+        petId = in.readInt();
+        notificationId = in.readInt();
+        userId = in.readInt();
+
     }
 
     public static final Creator<Reminder> CREATOR = new Creator<Reminder>() {
         @Override
-        public Reminder createFromParcel(Parcel in) {
-            return new Reminder(in);
-        }
-
+        public Reminder createFromParcel(Parcel in) { return new Reminder(in); }
         @Override
-        public Reminder[] newArray(int size) {
-            return new Reminder[size];
-        }
+        public Reminder[] newArray(int size) { return new Reminder[size]; }
     };
 
     @Override
@@ -68,6 +72,9 @@ public class Reminder implements Parcelable {
         dest.writeString(type);
         dest.writeByte((byte) (isRepeating ? 1 : 0));
         dest.writeString(notes);
+        dest.writeInt(petId);
+        dest.writeInt(notificationId);
+        dest.writeInt(userId);
     }
 
     // Getters
@@ -78,6 +85,9 @@ public class Reminder implements Parcelable {
     public String getType() { return type; }
     public boolean isRepeating() { return isRepeating; }
     public String getNotes() { return notes; }
+    public int getPetId() { return petId; }
+    public int getNotificationId() { return notificationId; }
+    public int getUserId(){return userId;}
 
     // Setters
     public void setId(int id) { this.id = id; }
@@ -87,4 +97,7 @@ public class Reminder implements Parcelable {
     public void setType(String type) { this.type = type; }
     public void setRepeating(boolean repeating) { isRepeating = repeating; }
     public void setNotes(String notes) { this.notes = notes; }
+    public void setPetId(int petId) { this.petId = petId; }
+    public void setNotificationId(int notificationId) { this.notificationId = notificationId; }
+    public void setUserId(int userId){this.userId = userId;}
 }

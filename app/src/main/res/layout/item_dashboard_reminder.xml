@@ -40,7 +40,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Annual checkup for Max"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvReminderTitle"
             app:layout_constraintTop_toBottomOf="@+id/tvReminderTitle" />
@@ -50,7 +49,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Nov 16, 10:00 AM"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvReminderTitle"
             app:layout_constraintTop_toBottomOf="@+id/tvReminderSubtitle" />

@@ -7,8 +7,8 @@ import java.util.List;
 
 public class HealthRecordViewModel extends AndroidViewModel {
 
-    private AppRepository repository;
-    private LiveData<List<HealthRecord>> allHealthRecords;
+    private final AppRepository repository;
+    private final LiveData<List<HealthRecord>> allHealthRecords;
 
     public HealthRecordViewModel(Application application) {
         super(application);
@@ -20,7 +20,12 @@ public class HealthRecordViewModel extends AndroidViewModel {
         return allHealthRecords;
     }
 
-    public void insert(HealthRecord healthRecord) {
-        repository.insert(healthRecord);
+    // Was missing — needed by PetProfileActivity and HealthRecordsActivity
+    public LiveData<List<HealthRecord>> getHealthRecordsForPet(int petId) {
+        return repository.getHealthRecordsForPet(petId);
     }
+
+    public void insert(HealthRecord h) { repository.insert(h); }
+    public void update(HealthRecord h) { repository.update(h); }
+    public void delete(HealthRecord h) { repository.delete(h); }
 }

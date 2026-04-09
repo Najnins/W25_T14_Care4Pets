@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     // FIX: Use 'ksp' for the Room compiler, not 'annotationProcessor' or 'kapt'
     ksp(libs.androidx.room.compiler)
+    implementation("androidx.core:core:1.12.0")
 
     // Testing libraries
     testImplementation(libs.junit)

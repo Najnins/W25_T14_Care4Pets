@@ -7,20 +7,27 @@ import java.util.List;
 
 public class CareInstructionsViewModel extends AndroidViewModel {
 
-    private AppRepository repository;
-    private LiveData<List<CareInstruction>> allInstructions;
+    private final AppRepository repository;
+    private final int userId;
+    private final LiveData<List<CareInstruction>> instructionsForUser;
 
     public CareInstructionsViewModel(Application application) {
         super(application);
         repository = new AppRepository(application);
-        allInstructions = repository.getAllCareInstructions();
+        userId= UserSessionManager.getUserId(application);
+        instructionsForUser = repository.getInstructionsForUser(userId);
     }
 
-    public LiveData<List<CareInstruction>> getAllInstructions() {
-        return allInstructions;
+    public LiveData<List<CareInstruction>> getInstructions() {
+        return instructionsForUser;
     }
 
     public void insert(CareInstruction instruction) {
+        instruction.setUserId(userId); // stamp with current user before saving
         repository.insert(instruction);
+    }
+
+    public void delete(CareInstruction instruction) {
+        repository.delete(instruction);
     }
 }

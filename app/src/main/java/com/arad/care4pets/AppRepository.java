@@ -3,17 +3,18 @@ package com.arad.care4pets;
 import android.app.Application;
 import androidx.lifecycle.LiveData;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class AppRepository {
 
-    private PetDao petDao;
-    private ReminderDao reminderDao;
-    private HealthRecordDao healthRecordDao;
-    private CareInstructionsDao careInstructionsDao;
-    private LiveData<List<Pet>> allPets;
-    private LiveData<List<Reminder>> allReminders;
-    private LiveData<List<HealthRecord>> allHealthRecords;
-    private LiveData<List<CareInstruction>> allCareInstructions;
+    private final PetDao petDao;
+    private final ReminderDao reminderDao;
+    private final HealthRecordDao healthRecordDao;
+    private final CareInstructionsDao careInstructionsDao;
+    private final UserDao userDao;
+
+    private final LiveData<List<HealthRecord>> allHealthRecords;
 
     public AppRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
@@ -21,60 +22,85 @@ public class AppRepository {
         reminderDao = db.reminderDao();
         healthRecordDao = db.healthRecordDao();
         careInstructionsDao = db.careInstructionsDao();
-        allPets = petDao.getAllPets();
-        allReminders = reminderDao.getAllReminders();
+        userDao = db.userDao();
         allHealthRecords = healthRecordDao.getAllHealthRecords();
-        allCareInstructions = careInstructionsDao.getAllInstructions();
     }
 
-    public void populateInitialData() {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            // For simplicity, we're not checking if the DB is empty.
-            // In a real app, you'd want to do this only once.
+    // User
 
-            petDao.insert(new Pet("Luna", "Dog", 3, "Allergic to chicken", 25, 98));
-            petDao.insert(new Pet("Milo", "Cat", 2, "Needs eye drops", 12, 95));
-
-            reminderDao.insert(new Reminder("Luna – Vet visit", "2024-12-15", null, "Vet", false, "Annual checkup"));
-            reminderDao.insert(new Reminder("Milo – Vaccination", "2025-01-05", null, "Vaccine", false, "Rabies booster"));
-
-            healthRecordDao.insert(new HealthRecord("Rabies Vaccine", "Given: Nov 10, 2025\nNext: Nov 10, 2026", "Vaccinations"));
-            healthRecordDao.insert(new HealthRecord("DHPP Vaccine", "Given: Oct 15, 2025\nNext: Oct 15, 2026", "Vaccinations"));
-            healthRecordDao.insert(new HealthRecord("Heartgard Plus", "1 tablet • Monthly", "Medications"));
-            healthRecordDao.insert(new HealthRecord("Bravecto", "500mg • Every 12 weeks", "Medications"));
-            healthRecordDao.insert(new HealthRecord("Annual Checkup", "Overall health is excellent. Weight: 45 lbs", "Health Notes"));
-            healthRecordDao.insert(new HealthRecord("Skin Allergy", "Prescribed medication for skin allergies.", "Health Notes"));
-
-            careInstructionsDao.insert(new CareInstruction("• Feed twice daily"));
-            careInstructionsDao.insert(new CareInstruction("• Walk for 30 minutes"));
-        });
+    public long registerUser(String email, String plainPassword, String name) {
+        String hash = PasswordUtils.hash(plainPassword);
+        User user = new User(email, hash, name);
+        return userDao.insert(user);
     }
 
-
-    // Pet methods
-    public LiveData<List<Pet>> getAllPets() { return allPets; }
-    public void insert(Pet pet) {
-        AppDatabase.databaseWriteExecutor.execute(() -> petDao.insert(pet));
+    /**
+     * Looks up a user by email and verifies the password.
+     * Returns the User if credentials match, null otherwise.
+     */
+    public User login(String email, String plainPassword) {
+        User user = userDao.getUserByEmail(email);
+        if (user == null) return null; // email not found
+        if (!PasswordUtils.verify(plainPassword, user.getPasswordHash())) return null; // wrong password
+        return user;
     }
 
-    // Reminder methods
-    public LiveData<List<Reminder>> getAllReminders() { return allReminders; }
+    // Pet
+    public LiveData<List<Pet>> getPetsForUser(int userId){
+        return petDao.getPetsForUser(userId);
+    }
+    public LiveData<Pet> getPetById(int petId){
+        return petDao.getPetById(petId);
+    }
+    public void insert(Pet pet) { AppDatabase.databaseWriteExecutor.execute(() -> petDao.insert(pet)); }
+    public void update(Pet pet) { AppDatabase.databaseWriteExecutor.execute(() -> petDao.update(pet)); }
+    public void delete(Pet pet) { AppDatabase.databaseWriteExecutor.execute(() -> petDao.delete(pet)); }
+
+    // Reminder
+
+    public LiveData<List<Reminder>> getRemindersForUser(int userId){
+        return  reminderDao.getRemindersForUser(userId);
+    }
+    public LiveData<List<Reminder>> getRemindersForPet(int petId) {
+        return reminderDao.getRemindersForPet(petId);
+    }
+
     public void insert(Reminder reminder) {
         AppDatabase.databaseWriteExecutor.execute(() -> reminderDao.insert(reminder));
     }
-    public void update(Reminder reminder) {
-        AppDatabase.databaseWriteExecutor.execute(() -> reminderDao.update(reminder));
+
+    // Inserts a reminder and returns its auto-generated ID.
+
+    public long insertReminderAndGetId(Reminder reminder) {
+        Future<Long> future = AppDatabase.databaseWriteExecutor.submit(
+                () -> reminderDao.insert(reminder)
+        );
+        try {
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            return -1;
+        }
     }
 
-    // HealthRecord methods
+    public void update(Reminder reminder) { AppDatabase.databaseWriteExecutor.execute(() -> reminderDao.update(reminder)); }
+    public void delete(Reminder reminder) { AppDatabase.databaseWriteExecutor.execute(() -> reminderDao.delete(reminder)); }
+
+    // HealthRecord
     public LiveData<List<HealthRecord>> getAllHealthRecords() { return allHealthRecords; }
-    public void insert(HealthRecord healthRecord) {
-        AppDatabase.databaseWriteExecutor.execute(() -> healthRecordDao.insert(healthRecord));
+
+    public LiveData<List<HealthRecord>> getHealthRecordsForPet(int petId) {
+        return healthRecordDao.getHealthRecordsForPet(petId);
     }
 
-    // CareInstruction methods
-    public LiveData<List<CareInstruction>> getAllCareInstructions() { return allCareInstructions; }
-    public void insert(CareInstruction instruction) {
-        AppDatabase.databaseWriteExecutor.execute(() -> careInstructionsDao.insert(instruction));
+    public void insert(HealthRecord h) { AppDatabase.databaseWriteExecutor.execute(() -> healthRecordDao.insert(h)); }
+    public void update(HealthRecord h) { AppDatabase.databaseWriteExecutor.execute(() -> healthRecordDao.update(h)); }
+    public void delete(HealthRecord h) { AppDatabase.databaseWriteExecutor.execute(() -> healthRecordDao.delete(h)); }
+
+    // CareInstruction
+    public LiveData<List<CareInstruction>> getInstructionsForUser(int userId) {
+        return careInstructionsDao.getInstructionsForUser(userId);
     }
+
+    public void insert(CareInstruction i) { AppDatabase.databaseWriteExecutor.execute(() -> careInstructionsDao.insert(i)); }
+    public void delete(CareInstruction i) { AppDatabase.databaseWriteExecutor.execute(() -> careInstructionsDao.delete(i)); }
 }

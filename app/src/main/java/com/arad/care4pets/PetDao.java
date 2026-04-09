@@ -19,6 +19,12 @@ public interface PetDao {
     @Delete
     void delete(Pet pet);
 
+
+    // Returns only pets belionging to current user
+    @Query("SELECT * FROM pets WHERE userId = :userId")
+    LiveData<List<Pet>> getPetsForUser(int userId);
     @Query("SELECT * FROM pets")
     LiveData<List<Pet>> getAllPets();
+    @Query("SELECT * FROM pets WHERE id = :petId")
+    LiveData<Pet> getPetById(int petId);
 }

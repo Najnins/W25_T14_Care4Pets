@@ -3,19 +3,28 @@ package com.arad.care4pets;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-public class AddPetActivity extends AppCompatActivity {
+public class EditPetActivity extends AppCompatActivity {
 
     private PetViewModel petViewModel;
+    private Pet pet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_pet);
+        setContentView(R.layout.activity_add_pet); // reuse the same layout
+
+        pet = getIntent().getParcelableExtra("pet");
+        if (pet == null) {
+            Toast.makeText(this, "Error: Pet not found.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         petViewModel = new ViewModelProvider(this).get(PetViewModel.class);
 
@@ -25,6 +34,15 @@ public class AddPetActivity extends AppCompatActivity {
         EditText etWeight  = findViewById(R.id.etPetWeight);
         EditText etNotes   = findViewById(R.id.etPetNotes);
         Button btnSave     = findViewById(R.id.btnSavePet);
+
+        // Pre-fill all fields with the current pet's data
+        etName.setText(pet.getName());
+        etSpecies.setText(pet.getSpecies());
+        etAge.setText(String.valueOf(pet.getAge()));
+        etWeight.setText(String.valueOf(pet.getWeight()));
+        etNotes.setText(pet.getNotes());
+
+        btnSave.setText("Save Changes");
 
         btnSave.setOnClickListener(v -> {
             String name       = etName.getText().toString().trim();
@@ -38,14 +56,16 @@ public class AddPetActivity extends AppCompatActivity {
                 return;
             }
 
-            int age    = Integer.parseInt(ageText);
-            int weight = Integer.parseInt(weightText);
+            // Update the existing pet object — keep its id and userId intact
+            pet.setName(name);
+            pet.setSpecies(species);
+            pet.setAge(Integer.parseInt(ageText));
+            pet.setWeight(Integer.parseInt(weightText));
+            pet.setNotes(notes);
 
-            // health defaults to 100 for a new pet
-            Pet pet = new Pet(name, species, age, notes, weight, 100);
-            petViewModel.insert(pet); // ViewModel stamps userId automatically
+            petViewModel.update(pet);
 
-            Toast.makeText(this, "Pet added", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Pet updated", Toast.LENGTH_SHORT).show();
             finish();
         });
     }
