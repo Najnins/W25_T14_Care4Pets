@@ -25,6 +25,7 @@
         <activity android:name=".RemindersActivity" />
         <activity android:name=".PetProfileActivity" />
         <activity android:name=".AddPetActivity" />
+        <activity android:name=".EditPetActivity"/>
         <activity android:name=".PetsListActivity" />
         <activity android:name=".MenuActivity" />
         <activity android:name=".LoginActivity" />
