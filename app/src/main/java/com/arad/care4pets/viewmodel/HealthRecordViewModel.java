@@ -4,7 +4,7 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.arad.care4pets.data.model.model.HealthRecord;
+import com.arad.care4pets.data.model.HealthRecord;
 import com.arad.care4pets.data.repository.AppRepository;
 
 import java.util.List;

@@ -13,11 +13,11 @@ import com.arad.care4pets.data.dao.HealthRecordDao;
 import com.arad.care4pets.data.dao.PetDao;
 import com.arad.care4pets.data.dao.ReminderDao;
 import com.arad.care4pets.data.dao.UserDao;
-import com.arad.care4pets.data.model.model.CareInstruction;
-import com.arad.care4pets.data.model.model.HealthRecord;
-import com.arad.care4pets.data.model.model.Pet;
-import com.arad.care4pets.data.model.model.Reminder;
-import com.arad.care4pets.data.model.model.User;
+import com.arad.care4pets.data.model.CareInstruction;
+import com.arad.care4pets.data.model.HealthRecord;
+import com.arad.care4pets.data.model.Pet;
+import com.arad.care4pets.data.model.Reminder;
+import com.arad.care4pets.data.model.User;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

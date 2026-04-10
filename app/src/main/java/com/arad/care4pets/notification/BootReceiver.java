@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.arad.care4pets.data.model.model.Reminder;
+import com.arad.care4pets.data.model.Reminder;
 import com.arad.care4pets.db.AppDatabase;
 
 import java.util.List;

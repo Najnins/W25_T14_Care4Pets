@@ -1,4 +1,4 @@
-package com.arad.care4pets.data.model.model;
+package com.arad.care4pets.data.model;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -23,7 +23,7 @@ import androidx.core.content.ContextCompat;
 import com.arad.care4pets.R;
 import com.arad.care4pets.notification.ReminderScheduler;
 import com.arad.care4pets.utils.UserSessionManager;
-import com.arad.care4pets.data.model.model.Reminder;
+import com.arad.care4pets.data.model.Reminder;
 import com.arad.care4pets.data.repository.AppRepository;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.switchmaterial.SwitchMaterial;

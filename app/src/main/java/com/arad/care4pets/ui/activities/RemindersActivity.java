@@ -15,7 +15,7 @@ import com.arad.care4pets.R;
 import com.arad.care4pets.ui.adapters.ReminderAdapter;
 import com.arad.care4pets.notification.ReminderScheduler;
 import com.arad.care4pets.viewmodel.ReminderViewModel;
-import com.arad.care4pets.data.model.model.Reminder;
+import com.arad.care4pets.data.model.Reminder;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 

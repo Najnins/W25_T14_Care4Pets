@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
-import com.arad.care4pets.data.model.model.Reminder;
+import com.arad.care4pets.data.model.Reminder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -1,4 +1,4 @@
-package com.arad.care4pets.data.model.model;
+package com.arad.care4pets.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

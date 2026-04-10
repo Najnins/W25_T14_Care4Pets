@@ -5,7 +5,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.arad.care4pets.data.model.model.User;
+import com.arad.care4pets.data.model.User;
 
 @Dao
 public interface UserDao {

@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.arad.care4pets.R;
 import com.arad.care4pets.utils.UserSessionManager;
-import com.arad.care4pets.data.model.model.User;
+import com.arad.care4pets.data.model.User;
 import com.arad.care4pets.data.repository.AppRepository;
 import com.google.android.material.textfield.TextInputEditText;
 

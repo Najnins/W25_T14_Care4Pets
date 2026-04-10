@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.arad.care4pets.viewmodel.HealthRecordViewModel;
 import com.arad.care4pets.R;
-import com.arad.care4pets.data.model.model.HealthRecord;
+import com.arad.care4pets.data.model.HealthRecord;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -16,7 +16,7 @@ import com.arad.care4pets.ui.adapters.DashboardReminderAdapter;
 import com.arad.care4pets.utils.EventDecorator;
 import com.arad.care4pets.R;
 import com.arad.care4pets.viewmodel.ReminderViewModel;
-import com.arad.care4pets.data.model.model.Reminder;
+import com.arad.care4pets.data.model.Reminder;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import java.text.ParseException;

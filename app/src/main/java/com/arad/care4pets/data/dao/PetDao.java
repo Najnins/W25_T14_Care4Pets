@@ -7,7 +7,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.arad.care4pets.data.model.model.Pet;
+import com.arad.care4pets.data.model.Pet;
 
 import java.util.List;
 

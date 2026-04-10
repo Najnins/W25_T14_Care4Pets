@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.arad.care4pets.utils.UserSessionManager;
-import com.arad.care4pets.data.model.model.CareInstruction;
+import com.arad.care4pets.data.model.CareInstruction;
 import com.arad.care4pets.data.repository.AppRepository;
 
 import java.util.List;

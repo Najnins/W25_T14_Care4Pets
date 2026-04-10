@@ -17,7 +17,7 @@ import com.arad.care4pets.viewmodel.HealthRecordViewModel;
 import com.arad.care4pets.viewmodel.PetViewModel;
 import com.arad.care4pets.R;
 import com.arad.care4pets.viewmodel.ReminderViewModel;
-import com.arad.care4pets.data.model.model.Pet;
+import com.arad.care4pets.data.model.Pet;
 
 public class PetProfileActivity extends AppCompatActivity {
 

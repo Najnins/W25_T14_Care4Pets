@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.arad.care4pets.R;
-import com.arad.care4pets.data.model.model.HealthRecord;
+import com.arad.care4pets.data.model.HealthRecord;
 
 public class HealthRecordAdapter extends ListAdapter<HealthRecord, HealthRecordAdapter.ViewHolder> {
 
