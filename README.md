@@ -36,8 +36,8 @@ Care4Pets requires registration before you can use the app. There are no pre-bui
 | Name | Role |
 |---|---|
 | Brian Pagsolingan | Backend Developer and Frontend Developer |
-| Shaheer Ansari | Unknown |
-| Najnin Sultana | Owns the Repository |
-| Arad Tahmasebifar | MIA |
-| Niaj Hossain | Unknown and MIA |
+| Shaheer Ansari | Quality Assurance Tester |
+| Najnin Sultana | Owns the Repository and Backend Developer|
+| Arad Tahmasebifar |UX Designer and Frontend Developer |
+| Niaj Hossain | Frontend Developer |
  
