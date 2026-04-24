@@ -19,7 +19,7 @@ A native Android application for managing your pets' health records, care instru
 1. Use the Android Studio Emulator or
 2. Use Android Phone connected via USB debuggin enabled.
 
-## Creatign An Account
+## Creating An Account
 
 Care4Pets requires registration before you can use the app. There are no pre-built test acounts - you must create your own.
 
