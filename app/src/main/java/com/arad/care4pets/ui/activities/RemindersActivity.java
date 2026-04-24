@@ -4,6 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -62,14 +67,63 @@ public class RemindersActivity extends AppCompatActivity implements ReminderAdap
     }
 
     private void filterReminders(int checkedId) {
-        adapter.setReminders(new ArrayList<>(allReminders));
+        List<Reminder> filtered = new ArrayList<>();
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date today = cal.getTime();
+
+        SimpleDateFormat fmt = new SimpleDateFormat("MM/dd/yy", Locale.CANADA);
+
+        if (checkedId == R.id.btnAll) {
+            filtered.addAll(allReminders);
+
+        } else if (checkedId == R.id.btnToday) {
+            for (Reminder r : allReminders) {
+                Date d = parseDate(r.getDate(), fmt);
+                if (d != null && isSameDay(d, today)) filtered.add(r);
+            }
+
+        } else if (checkedId == R.id.btnUpcoming) {
+            for (Reminder r : allReminders) {
+                Date d = parseDate(r.getDate(), fmt);
+                if (d != null && d.after(today)) filtered.add(r);
+            }
+
+        } else if (checkedId == R.id.btnRecurring) {
+            for (Reminder r : allReminders) {
+                if (r.isRepeating()) filtered.add(r);
+            }
+
+        } else {
+            filtered.addAll(allReminders);
+        }
+
+        adapter.setReminders(filtered);
     }
+
+    private Date parseDate(String s, SimpleDateFormat fmt) {
+        if (s == null || s.isEmpty()) return null;
+        try { return fmt.parse(s); } catch (ParseException e) { return null; }
+    }
+
+    private boolean isSameDay(Date a, Date b) {
+        Calendar c1 = Calendar.getInstance(); c1.setTime(a);
+        Calendar c2 = Calendar.getInstance(); c2.setTime(b);
+        return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
+                && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR);
+    }
+
 
     private void updateSubtitle() {
         int count = allReminders.size();
         tvRemindersSubtitle.setText(
                 getResources().getQuantityString(R.plurals.active_reminders, count, count));
     }
+
 
     @Override
     public void onEditClick(Reminder reminder) {
