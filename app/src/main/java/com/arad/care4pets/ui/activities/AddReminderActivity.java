@@ -29,6 +29,7 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -117,7 +118,7 @@ public class AddReminderActivity extends AppCompatActivity {
     private void showDatePicker() {
         new DatePickerDialog(this, (view, year, month, day) -> {
             calendar.set(year, month, day);
-            etDate.setText(new SimpleDateFormat("MM/dd/yy", Locale.US).format(calendar.getTime()));
+            etDate.setText(new SimpleDateFormat("MM/dd/yy", Locale.CANADA).format(calendar.getTime()));
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
@@ -126,7 +127,13 @@ public class AddReminderActivity extends AppCompatActivity {
         new TimePickerDialog(this, (view, hour, minute) -> {
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
-            etTime.setText(new SimpleDateFormat("hh:mm a", Locale.US).format(calendar.getTime()));
+
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.CANADA);
+            DateFormatSymbols symbols = new DateFormatSymbols(Locale.CANADA);
+            symbols.setAmPmStrings(new String[]{"AM", "PM"});
+            sdf.setDateFormatSymbols(symbols);
+
+            etTime.setText(sdf.format(calendar.getTime()));
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false).show();
     }
 

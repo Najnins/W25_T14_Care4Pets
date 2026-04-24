@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.arad.care4pets.data.model.Reminder;
 
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,45 +19,46 @@ public class ReminderScheduler {
 
     private static final String TAG = "ReminderScheduler";
 
-    public static void schedule(Context context, Reminder reminder){
+    public static void schedule(Context context, Reminder reminder) {
         long triggerAtMillis = parseTriggerTime(reminder.getDate(), reminder.getTime());
 
-        if(triggerAtMillis <= System.currentTimeMillis()){
+        if (triggerAtMillis <= System.currentTimeMillis()) {
             Log.w(TAG, "Skipping past reminder: " + reminder.getTitle());
             return;
         }
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if(alarmManager == null) return;
+        if (alarmManager == null) return;
 
         PendingIntent pendingIntent = buildPendingIntent(context, reminder);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
-            if(alarmManager.canScheduleExactAlarms()){
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
-            }else{
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
-            }
-        }else{
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+        } else {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
         }
 
-        Log.d(TAG, "Alarm Schedyuled: " + reminder.getTitle() + " @ " + triggerAtMillis);
+        Log.d(TAG, "Alarm scheduled: " + reminder.getTitle() + " @ " + triggerAtMillis);
     }
 
-    public static void cancel(Context context, Reminder reminder){
+    public static void cancel(Context context, Reminder reminder) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if(alarmManager == null) return;
+        if (alarmManager == null) return;
+
+        PendingIntent pendingIntent = buildPendingIntent(context, reminder);
+        alarmManager.cancel(pendingIntent);
+        pendingIntent.cancel();
+
         Log.d(TAG, "Alarm cancelled: " + reminder.getTitle());
     }
 
-    private static PendingIntent buildPendingIntent(Context context, Reminder reminder){
+    private static PendingIntent buildPendingIntent(Context context, Reminder reminder) {
         Intent intent = new Intent(context, ReminderNotificationReceiver.class);
         intent.putExtra(ReminderNotificationReceiver.EXTRA_TITLE, reminder.getTitle());
         intent.putExtra(ReminderNotificationReceiver.EXTRA_NOTES, reminder.getNotes());
         intent.putExtra(ReminderNotificationReceiver.EXTRA_NOTIFICATION_ID, reminder.getId());
 
-        return  PendingIntent.getBroadcast(
+        return PendingIntent.getBroadcast(
                 context,
                 reminder.getId(),
                 intent,
@@ -64,21 +66,28 @@ public class ReminderScheduler {
         );
     }
 
-    private static long parseTriggerTime(String date, String time){
-        try{
+
+    private static SimpleDateFormat dateTimeFormat() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy hh:mm a", Locale.CANADA);
+        DateFormatSymbols symbols = new DateFormatSymbols(Locale.CANADA);
+        symbols.setAmPmStrings(new String[]{"AM", "PM"});
+        sdf.setDateFormatSymbols(symbols);
+        return sdf;
+    }
+
+    private static long parseTriggerTime(String date, String time) {
+        try {
             String dateTimeStr;
-            if(time != null && time.isEmpty()){
+            if (time != null && !time.isEmpty()) {
                 dateTimeStr = date + " " + time;
-            }else{
-                dateTimeStr = date + "9:00 AM"; //default is 9am if no time is set
+            } else {
+                dateTimeStr = date + " 9:00 AM";
             }
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy hh:mm a", Locale.CANADA);
-            Date parsed = sdf.parse(dateTimeStr);
+            Date parsed = dateTimeFormat().parse(dateTimeStr);
             return parsed != null ? parsed.getTime() : System.currentTimeMillis();
-        }catch (ParseException e){
-            Log.e(TAG, "Failed to parse date/ time" + date + " " + time, e);
+        } catch (ParseException e) {
+            Log.e(TAG, "Failed to parse date/time " + date + " " + time, e);
             return System.currentTimeMillis();
         }
     }
-
 }
