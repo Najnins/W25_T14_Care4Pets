@@ -5,13 +5,13 @@ A native Android application for managing your pet's health records, care instru
 
 ## Getting Started
 
-### 1. Download the Zip from GIthub
+### 1. Download the Zip from GitHub
 
 ### 2. Open the Project in Android Studio
 
 1. Launch **Android Studio**
 2. Click **File -> Open**
-3. Navigate to the folder and slect the root `Group14-Capstone-Project-2` folder
+3. Navigate to the folder and select the root `Group14-Capstone-Project-2` folder
 4. Wait for Gradle to sync.
 
 ## Running the App
