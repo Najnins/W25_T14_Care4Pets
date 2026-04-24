@@ -39,5 +39,5 @@ Care4Pets requires registration before you can use the app. There are no pre-bui
 | Shaheer Ansari | Unknown |
 | Najnin Sultana | Owns the Repository |
 | Arad Tahmasebifar | MIA |
-| Niaj Hossain | Unkown and MIA |
+| Niaj Hossain | Unknown and MIA |
  
