@@ -19,7 +19,7 @@ There are two ways to run this app:
 
 1. Use the Android Studio Emulator
 or
-2. Use Android Phone connected via USB debuggin enabled.
+2. Use Android Phone connected via USB debugging enabled.
 
 ## Creating An Account
 
