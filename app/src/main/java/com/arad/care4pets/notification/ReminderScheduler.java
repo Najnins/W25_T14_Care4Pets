@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.arad.care4pets.data.model.Reminder;
 
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -43,24 +44,35 @@ public class ReminderScheduler {
     public static void cancel(Context context, Reminder reminder) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager == null) return;
+
         PendingIntent pendingIntent = buildPendingIntent(context, reminder);
         alarmManager.cancel(pendingIntent);
         pendingIntent.cancel();
+
         Log.d(TAG, "Alarm cancelled: " + reminder.getTitle());
     }
 
-    private static PendingIntent buildPendingIntent(Context context, Reminder reminder){
+    private static PendingIntent buildPendingIntent(Context context, Reminder reminder) {
         Intent intent = new Intent(context, ReminderNotificationReceiver.class);
         intent.putExtra(ReminderNotificationReceiver.EXTRA_TITLE, reminder.getTitle());
         intent.putExtra(ReminderNotificationReceiver.EXTRA_NOTES, reminder.getNotes());
         intent.putExtra(ReminderNotificationReceiver.EXTRA_NOTIFICATION_ID, reminder.getId());
 
-        return  PendingIntent.getBroadcast(
+        return PendingIntent.getBroadcast(
                 context,
                 reminder.getId(),
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
+    }
+
+
+    private static SimpleDateFormat dateTimeFormat() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy hh:mm a", Locale.CANADA);
+        DateFormatSymbols symbols = new DateFormatSymbols(Locale.CANADA);
+        symbols.setAmPmStrings(new String[]{"AM", "PM"});
+        sdf.setDateFormatSymbols(symbols);
+        return sdf;
     }
 
     private static long parseTriggerTime(String date, String time) {
@@ -71,13 +83,11 @@ public class ReminderScheduler {
             } else {
                 dateTimeStr = date + " 9:00 AM";
             }
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy hh:mm a", Locale.CANADA);
-            Date parsed = sdf.parse(dateTimeStr);
+            Date parsed = dateTimeFormat().parse(dateTimeStr);
             return parsed != null ? parsed.getTime() : System.currentTimeMillis();
         } catch (ParseException e) {
             Log.e(TAG, "Failed to parse date/time " + date + " " + time, e);
             return System.currentTimeMillis();
         }
     }
-
 }
